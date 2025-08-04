@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Moonfall</title>
+    <script src="https://game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #loading-container {
+            text-align: center;
+        }
+        #progress {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-container">
+        <h1>Loading Game...</h1>
+        <div id="progress">0%</div>
+    </div>
+    
+    <script>
+        var buildUrl = "Build";
+        var loaderUrl = buildUrl + "/MyGame.loader.js";
+        var config = {
+            dataUrl: buildUrl + "/MyGame.data",
+            frameworkUrl: buildUrl + "/MyGame.framework.js",
+            codeUrl: buildUrl + "/MyGame.wasm",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "AinzGames",
+            productName: "Moonfall",
+            productVersion: "1.0",
+            showBanner: function(msg, type) {} // disable Unity banner
+        };
+
+        var progressEl = document.getElementById("progress");
+
+        if (typeof Poki !== "undefined" && Poki.gameLoadingStart) {
+            Poki.gameLoadingStart();
+        }
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(document.getElementById("loading-container"), config, (progress) => {
+                progressEl.textContent = Math.round(progress * 100) + "%";
+
+                if (progress === 1 && typeof Poki !== "undefined" && Poki.gameLoadingFinished) {
+                    Poki.gameLoadingFinished();
+                }
+            });
+        };
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>
